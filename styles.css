@@ -1,0 +1,16 @@
+body{
+  background:#424249;
+}
+#score{
+    display: inline-block;
+}
+div{
+    font-size: 25px;
+    font-weight: bold;
+    font-family: monospace;
+    text-align: center;
+}
+canvas{
+    display: block;
+    margin:0 auto;
+}
