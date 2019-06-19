@@ -1,7 +1,6 @@
 const cvs = document.getElementById("tetris");
 const ctx = cvs.getContext("2d");
 const scoreElement = document.getElementById("score");
-
 const ROW = 20;
 const COL = COLUMN = 10;
 const SQ = squareSize = 20;
@@ -11,7 +10,6 @@ const VACANT = "WHITE";
 function drawSquare(x,y,color){
     ctx.fillStyle = color;
     ctx.fillRect(x*SQ,y*SQ,SQ,SQ);
-
     ctx.strokeStyle = "BLACK";
     ctx.strokeRect(x*SQ,y*SQ,SQ,SQ);
 }
@@ -50,7 +48,7 @@ const PIECES = [
 ];
 
 function randomPiece(){
-    let r = randomN = Math.floor(Math.random() * PIECES.length) // 0 -> 6
+    let r = randomN = Math.floor(Math.random() * PIECES.length) 
     return new Piece( PIECES[r][0],PIECES[r][1]);
 }
 
@@ -59,11 +57,8 @@ let p = randomPiece();
 function Piece(tetromino,color){
     this.tetromino = tetromino;
     this.color = color;
-
     this.tetrominoN = 0;
     this.activeTetromino = this.tetromino[this.tetrominoN];
-
-
     this.x = 3;
     this.y = -2;
 }
@@ -73,7 +68,6 @@ function Piece(tetromino,color){
 Piece.prototype.fill = function(color){
     for( r = 0; r < this.activeTetromino.length; r++){
         for(c = 0; c < this.activeTetromino.length; c++){
-            // we draw only occupied squares
             if( this.activeTetromino[r][c]){
                 drawSquare(this.x + c,this.y + r, color);
             }
@@ -100,13 +94,24 @@ Piece.prototype.moveDown = function(){
         this.y++;
         this.draw();
     }else{
-
         this.lock();
         p = randomPiece();
     }
 
 }
-
+Piece.prototype.DropToBottom = function(){
+while(true){ 
+ if(!this.collision(0,1,this.activeTetromino)){
+        this.unDraw();
+        this.y++;
+        this.draw();
+    }else{
+        this.lock();
+        p = randomPiece();
+		break;
+    }
+}
+}
 Piece.prototype.moveRight = function(){
     if(!this.collision(1,0,this.activeTetromino)){
         this.unDraw();
@@ -126,7 +131,6 @@ Piece.prototype.moveLeft = function(){
 Piece.prototype.rotate = function(){
     let nextPattern = this.tetromino[(this.tetrominoN + 1)%this.tetromino.length];
     let kick = 0;
-
     if(this.collision(0,0,nextPattern)){
         if(this.x > COL/2){
             kick = -1;
@@ -212,15 +216,18 @@ document.addEventListener("keydown",CONTROL);
 function CONTROL(event){
     if(event.keyCode == 37){
         p.moveLeft();
-        dropStart = Date.now();
+        //dropStart = Date.now();
     }else if(event.keyCode == 38){
         p.rotate();
-        dropStart = Date.now();
+        //dropStart = Date.now();
     }else if(event.keyCode == 39){
         p.moveRight();
-        dropStart = Date.now();
+        //dropStart = Date.now();
     }else if(event.keyCode == 40){
         p.moveDown();
+    }
+    else if(event.keyCode == 32){
+        p.DropToBottom();
     }
 }
 
